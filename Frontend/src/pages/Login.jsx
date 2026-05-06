@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // ✅ import navigation
+import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 
 const bgImg = "/image.png";
@@ -14,10 +14,10 @@ const Login = () => {
     role: "client"
   });
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(null); // 'success' | 'error'
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
-  // Handle input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -25,7 +25,6 @@ const Login = () => {
     });
   };
 
-  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -40,11 +39,10 @@ const Login = () => {
       const res = await axios.post(url, payload);
 
       setMessage(isSignup ? "Registration successful!" : "Login successful!");
+      setMessageType("success");
 
-      // Store token
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
-      //  localStorage.setItem("user", JSON.stringify(res.data.user));
 
         if (isSignup) {
           navigate("/dashboard");
@@ -55,83 +53,100 @@ const Login = () => {
     } catch (err) {
       console.error(err);
       setMessage(err.response?.data?.message || "Something went wrong.");
+      setMessageType("error");
     }
   };
 
   return (
-    <div className={`login-container ${isSignup ? "signup-mode" : ""}`}>
-      <div className="login-wrapper">
+    <div className="login-container">
+      <div className={`login-wrapper ${isSignup ? "active" : ""}`}>
+
+        {/* IMAGE SIDE */}
         <div
           className="login-left"
           style={{ backgroundImage: `url(${bgImg})` }}
         ></div>
 
+        {/* FORM SIDE */}
         <div className="login-box">
           <div className="logo">🗓️</div>
-          <h2>
-            {isSignup
-              ? "Create Your CalNova Account"
-              : "Welcome Back to CalNova"}
-          </h2>
 
-          <form onSubmit={handleSubmit}>
-            {isSignup && (
-              <>
-                <label>Full Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Enter your full name"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-              </>
-            )}
-
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter your password"
-              autoComplete="current-password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-
-            <button type="submit">
-              {isSignup ? "Sign Up →" : "Login →"}
-            </button>
-          </form>
-
-          <p style={{ color: "crimson", marginTop: "10px" }}>{message}</p>
-
-          <div className="extras">
-            {!isSignup && <a href="#">Forgot your password?</a>}
-            <br />
-            <span>
+          <div
+            key={isSignup ? "mode-signup" : "mode-login"}
+            className="login-switch-panel"
+          >
+            <h2>
               {isSignup
-                ? "Already have an account?"
-                : "Don’t have an account?"}{" "}
-              <button
-                type="button"
-                className="link-btn"
-                onClick={() => {
-                  setIsSignup(!isSignup);
-                  setMessage("");
-                }}
-              >
-                {isSignup ? "Login" : "Sign Up"}
+                ? "Create Your CalNova Account"
+                : "Welcome Back to CalNova"}
+            </h2>
+
+            <form onSubmit={handleSubmit}>
+              {isSignup && (
+                <>
+                  <label>Full Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter your full name"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                </>
+              )}
+
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+
+              <button type="submit">
+                {isSignup ? "Sign Up →" : "Login →"}
               </button>
-            </span>
+            </form>
+
+            {message ? (
+              <p
+                className={`form-message form-message--${messageType}`}
+                role="alert"
+              >
+                {message}
+              </p>
+            ) : null}
+
+            <div className="extras">
+              {!isSignup && <a href="#">Forgot your password?</a>}
+              <br />
+              <span>
+                {isSignup
+                  ? "Already have an account?"
+                  : "Don’t have an account?"}{" "}
+                <button
+                  type="button"
+                  className="link-btn"
+                  onClick={() => {
+                    setIsSignup(!isSignup);
+                    setMessage("");
+                    setMessageType(null);
+                  }}
+                >
+                  {isSignup ? "Login" : "Sign Up"}
+                </button>
+              </span>
+            </div>
           </div>
         </div>
       </div>

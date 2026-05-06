@@ -23,8 +23,7 @@ const Home = () => {
         <ul className="nav-links">
           <li onClick={() => navigate("/dashboard")}>Dashboard</li>
           <li onClick={() => navigate("/bookings")}>Bookings</li>
-          <li onClick={() => navigate("/Owners")}>Owners</li>
-        </ul>
+          <li onClick={() => navigate("/owners")}>Owners</li>        </ul>
         <div className="user-info">
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>

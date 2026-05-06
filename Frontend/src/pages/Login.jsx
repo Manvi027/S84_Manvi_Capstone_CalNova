@@ -29,8 +29,8 @@ const Login = () => {
     e.preventDefault();
     try {
       const url = isSignup
-        ? "http://localhost:8000/api/auth/register"
-        : "http://localhost:8000/api/auth/login";
+        ? "https://s84-manvi-capstone-calnova-3.onrender.com/api/auth/register"
+        : "https://s84-manvi-capstone-calnova-3.onrender.com/api/auth/login";
 
       const payload = isSignup
         ? formData
